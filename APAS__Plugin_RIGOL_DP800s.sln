@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APAS_Plugin_RIGOL_DP800s", "APAS__PluginImp\APAS_Plugin_RIGOL_DP800s.csproj", "{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APAS_Plugin_RIGOL_DP800sTests", "APAS_Plugin_RIGOL_DP800sTests\APAS_Plugin_RIGOL_DP800sTests.csproj", "{AB1E09B9-682D-43ED-86CE-0E680E7FF55B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1E09B9-682D-43ED-86CE-0E680E7FF55B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1E09B9-682D-43ED-86CE-0E680E7FF55B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1E09B9-682D-43ED-86CE-0E680E7FF55B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1E09B9-682D-43ED-86CE-0E680E7FF55B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DBEBC63B-3BD8-42E6-B759-B7D3D8B54574}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="APAS_Plugin_RIGOL_DP800s.BlinkingIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:APAS_Plugin_RIGOL_DP800s"
+             mc:Ignorable="d" 
+             d:DesignHeight="3" d:DesignWidth="3">
+    <UserControl.Resources>
+        <Storyboard x:Key="sbdBlinking" Storyboard.TargetProperty="Opacity">
+            <DoubleAnimation From="0" To="1" Duration="0:0:0.1">
+                <DoubleAnimation.EasingFunction>
+                    <QuinticEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+    <Border x:Name="brd" Background="#FFFF0101" Opacity="0"/>
+</UserControl>

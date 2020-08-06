@@ -1,0 +1,6 @@
+[submodule "APAS__PluginContract"]
+	path = APAS__PluginContract
+	url = https://github.com/Mikksu/APAS__PluginContract.git
+[submodule "APAS__SystemServiceContract"]
+	path = APAS__SystemServiceContract
+	url = https://github.com/Mikksu/APAS__SystemServiceContract.git
