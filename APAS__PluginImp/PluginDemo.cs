@@ -58,8 +58,7 @@ namespace APAS_Plugin_RIGOL_DP800s
         private Task bgTask;
         private CancellationTokenSource cts;
         private CancellationToken ct;
-
-
+        private bool _isInit;
         readonly Configuration config = null;
 
         #endregion
@@ -74,7 +73,7 @@ namespace APAS_Plugin_RIGOL_DP800s
 
             _loadConfigItem(config, "ReadIntervalMillisec", out readIntervalms, 200);
 
-            _loadConfigItem(config, "DP831_SN", out string dp800sn, "");
+            _loadConfigItem(config, "DP831_SN", out dp800sn, "");
 
             _loadConfigItem(config, CFG_ITEM_OCP_1, out double dp831_ocp_a_ch1, 0.2);
             _loadConfigItem(config, CFG_ITEM_OCP_2, out double dp831_ocp_a_ch2, 0.2);
@@ -85,7 +84,6 @@ namespace APAS_Plugin_RIGOL_DP800s
 
 
             #endregion
-
 
             this.PsSingleChannel = new PowerSupplyChannel[2]
             {
@@ -120,10 +118,10 @@ namespace APAS_Plugin_RIGOL_DP800s
 
         public override string Usage =>
             "普源DP800系列直流电源控制程序。\n" +
-            "通道1：CH1实时电压（V）。\n" +
-            "通道2：CH1实时电流（A）。\n" +
-            "通道3：CH2实时电压（V）。\n" +
-            "通道4：CH2实时电流（A）。\n" +
+            "Fetch(1)：CH1实时电压（V）。\n" +
+            "Fetch(2)：CH1实时电流（A）。\n" +
+            "Fetch(3)：CH2实时电压（V）。\n" +
+            "Fetch(4)：CH2实时电流（A）。\n" +
             "支持的命令: \n" +
             "ON [1|2|ALL]：打开指定通道或全部电源输出；\n" +
             "OFF [1|2|ALL]：关闭指定通道或所有通道电源输出；\n" +
@@ -137,7 +135,17 @@ namespace APAS_Plugin_RIGOL_DP800s
         /// </summary>
         public override int MaxChannel => 4;
 
-         
+         public new bool IsInitialized
+        {
+            get
+            {
+                return _isInit;
+            }
+            private set
+            {
+                UpdateProperty(ref _isInit, value);
+            }
+        }
 
         public PowerSupplyChannel[] PsSingleChannel { get; }
 
@@ -522,6 +530,9 @@ __param_err:
 
                 bgTask = Task.Run(() =>
                 {
+                    // wait for 2s to ensure the UI is initialized completely.
+                    Thread.Sleep(2000);
+
                     while (true)
                     {
                         try

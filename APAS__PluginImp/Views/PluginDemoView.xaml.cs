@@ -15,7 +15,7 @@ namespace APAS_Plugin_RIGOL_DP800s
 
         private void PluginDemoView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if(e.NewValue is PluginDemo)
+            if (e.NewValue is PluginDemo)
             {
                 var dc = e.NewValue as PluginDemo;
 

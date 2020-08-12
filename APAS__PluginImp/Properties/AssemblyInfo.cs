@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("APAS Plugin Template")]
+[assembly: AssemblyTitle("APAS Plugin for DP800s DC Power Supplier Remote Control")]
 [assembly: AssemblyDescription("The template project of the plugin for APAS.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Irixi")]
 [assembly: AssemblyProduct("APAS Series")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("946CBA24-8882-45BD-9116-E4F5F8C37773")]
+[assembly: Guid("E06DEA49-4B00-4595-BB5B-CCCDADD38991")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.9.9")]
-[assembly: AssemblyFileVersion("1.0.9.9")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
