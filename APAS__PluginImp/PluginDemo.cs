@@ -1,6 +1,5 @@
 ﻿using APAS__PluginContract.ImplementationBase;
 using DP800s;
-using NationalInstruments;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -21,8 +20,8 @@ namespace APAS_Plugin_RIGOL_DP800s
         #region Variables
 
         enum REMOTE_CTRL_CH
-        { 
-            CH1_RT_VCC = 1,
+        {
+            CH1_RT_VCC,
             CH1_RT_CURR,
             CH2_RT_VCC,
             CH2_RT_CURR
@@ -60,6 +59,8 @@ namespace APAS_Plugin_RIGOL_DP800s
         private CancellationToken ct;
         private bool _isInit;
         readonly Configuration config = null;
+
+        IProgress<DP800ReadingResponse> progress;
 
         #endregion
 
@@ -108,6 +109,18 @@ namespace APAS_Plugin_RIGOL_DP800s
             };
 
             this.HasView = true;
+
+            //! the progress MUST BE defined in the ctor since
+            //! we operate the UI elements in the OnCommOneShot event.
+            progress = new Progress<DP800ReadingResponse>(x =>
+            {
+                x.ChannelInstance.IsOutputEnabled = x.IsEnabled;
+                x.ChannelInstance.RtVoltage = x.RtVoltage;
+                x.ChannelInstance.RtCurrent = x.RtCurrent;
+                x.ChannelInstance.RtWatt = x.RtWatt;
+
+                OnCommOneShot?.Invoke(this, new EventArgs());
+            });
         }
 
         #endregion
@@ -118,10 +131,10 @@ namespace APAS_Plugin_RIGOL_DP800s
 
         public override string Usage =>
             "普源DP800系列直流电源控制程序。\n" +
-            "Fetch(1)：CH1实时电压（V）。\n" +
-            "Fetch(2)：CH1实时电流（A）。\n" +
-            "Fetch(3)：CH2实时电压（V）。\n" +
-            "Fetch(4)：CH2实时电流（A）。\n" +
+            "Fetch(0)：CH1实时电压（V）。\n" +
+            "Fetch(1)：CH1实时电流（A）。\n" +
+            "Fetch(2)：CH2实时电压（V）。\n" +
+            "Fetch(3)：CH2实时电流（A）。\n" +
             "支持的命令: \n" +
             "ON [1|2|ALL]：打开指定通道或全部电源输出；\n" +
             "OFF [1|2|ALL]：关闭指定通道或所有通道电源输出；\n" +
@@ -131,17 +144,25 @@ namespace APAS_Plugin_RIGOL_DP800s
 
         /// <summary>
         /// 最大测量通道。
-        /// <para>通道5表示通道平衡差值。</para>
         /// </summary>
         public override int MaxChannel => 4;
 
-         public new bool IsInitialized
+        public override string[] ChannelCaption => 
+            new string[] 
+            {
+                "CH1电压",
+                "CH1电流",
+                "CH2电压",
+                "CH2电流"
+            };
+
+        public override bool IsInitialized
         {
             get
             {
                 return _isInit;
             }
-            private set
+            protected set
             {
                 UpdateProperty(ref _isInit, value);
             }
@@ -314,7 +335,7 @@ __param_err:
         /// <returns>double</returns>
         public override object Fetch(int Channel)
         {
-            if (Channel > 0 && Channel < MaxChannel)
+            if (Channel >= 0 && Channel < MaxChannel - 1)
             {
                 switch (Channel)
                 {
@@ -390,20 +411,6 @@ __param_err:
 
                 IsInitialized = true;
                 IsEnabled = true;
-
-                #region The progress is use to update the UI elements in the UI thread.
-
-                IProgress<DP800ReadingResponse> progress = new Progress<DP800ReadingResponse>(x =>
-                {
-                    x.ChannelInstance.IsOutputEnabled = x.IsEnabled;
-                    x.ChannelInstance.RtVoltage = x.RtVoltage;
-                    x.ChannelInstance.RtCurrent = x.RtCurrent;
-                    x.ChannelInstance.RtWatt = x.RtWatt;
-
-                    OnCommOneShot?.Invoke(this, new EventArgs());
-                });
-
-                #endregion
 
                 _startBackgroundTask(progress);
 

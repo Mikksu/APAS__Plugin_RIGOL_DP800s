@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:APAS_Plugin_RIGOL_DP800s"
              mc:Ignorable="d" 
-             MaxHeight="300" MaxWidth="500"
-             d:DesignHeight="300" d:DesignWidth="500">
+             MaxHeight="300" MaxWidth="450"
+             d:DesignHeight="300" d:DesignWidth="450">
     <Grid Background="White">
         <Grid.Resources>
             <Style TargetType="GroupBox">
