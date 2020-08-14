@@ -83,8 +83,9 @@ namespace APAS_Plugin_RIGOL_DP800s
             _loadConfigItem(config, CFG_ITEM_VSET_1, out double def_vset_1, 0);
             _loadConfigItem(config, CFG_ITEM_VSET_2, out double def_vset_2, 0);
 
-
             #endregion
+
+            this.Port = $"USB IVI,{dp800sn}";
 
             this.PsSingleChannel = new PowerSupplyChannel[2]
             {
