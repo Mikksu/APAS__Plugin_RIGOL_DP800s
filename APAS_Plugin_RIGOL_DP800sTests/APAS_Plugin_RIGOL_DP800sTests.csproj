@@ -7,7 +7,7 @@
     <ProjectGuid>{AB1E09B9-682D-43ED-86CE-0E680E7FF55B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CreatlightCwdm4RespReaderTests</RootNamespace>
+    <RootNamespace>APAS_Plugin_RIGOL_DP800sTests</RootNamespace>
     <AssemblyName>APAS_Plugin_RIGOL_DP800sTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -77,12 +77,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\APAS__PluginImp\APAS_Plugin_RIGOL_DP800s.csproj">
-      <Project>{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}</Project>
-      <Name>APAS_Plugin_RIGOL_DP800s</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\halcondotnet.dll" />

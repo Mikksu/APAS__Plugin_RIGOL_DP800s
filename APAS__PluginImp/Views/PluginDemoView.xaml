@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:APAS_Plugin_RIGOL_DP800s"
              mc:Ignorable="d" 
-             MaxHeight="300" MaxWidth="450"
-             d:DesignHeight="300" d:DesignWidth="450">
+             MaxHeight="300" MaxWidth="500"
+             d:DesignHeight="300" d:DesignWidth="600">
     <Grid Background="White">
         <Grid.Resources>
             <Style TargetType="GroupBox">
@@ -28,9 +28,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <!-- RIGOL Brand Bar-->
-        <Border Grid.ColumnSpan="2" Background="Black">
+        <Border Grid.ColumnSpan="3" Background="Black">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -59,6 +60,11 @@
 
         <GroupBox Grid.Row="1" Grid.Column="1" 
                   Header="{Binding PsSingleChannel[1].BindingChannel}" IsEnabled="{Binding IsInitialized}" >
+            <local:PsSingleChannelView DataContext="{Binding PsSingleChannel[1]}"/>
+        </GroupBox>
+        
+        <GroupBox Grid.Row="1" Grid.Column="2"
+                  Header="{Binding PsSingleChannel[2].BindingChannel}" IsEnabled="{Binding IsInitialized}" >
             <local:PsSingleChannelView DataContext="{Binding PsSingleChannel[1]}"/>
         </GroupBox>
     </Grid>

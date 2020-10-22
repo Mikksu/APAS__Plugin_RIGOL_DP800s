@@ -24,7 +24,9 @@ namespace APAS_Plugin_RIGOL_DP800s
             CH1_RT_VCC,
             CH1_RT_CURR,
             CH2_RT_VCC,
-            CH2_RT_CURR
+            CH2_RT_CURR,
+            CH3_RT_VCC,
+            CH3_RT_CURR
         }
 
         const DP832A.CHANNEL VCC_CH = DP832A.CHANNEL.CH1;
@@ -42,6 +44,9 @@ namespace APAS_Plugin_RIGOL_DP800s
         const string CFG_ITEM_OCP_2 = "DP831_OCP_A_CH2";
         const string CFG_ITEM_OVP_2 = "DP831_OVP_V_CH2";
         const string CFG_ITEM_VSET_2 = "DEF_VSET_CH2";
+        const string CFG_ITEM_OCP_3 = "DP831_OCP_A_CH3";
+        const string CFG_ITEM_OVP_3 = "DP831_OVP_V_CH3";
+        const string CFG_ITEM_VSET_3 = "DEF_VSET_CH3";
 
         public event EventHandler OnCommOneShot;
 
@@ -78,28 +83,37 @@ namespace APAS_Plugin_RIGOL_DP800s
 
             _loadConfigItem(config, CFG_ITEM_OCP_1, out double dp831_ocp_a_ch1, 0.2);
             _loadConfigItem(config, CFG_ITEM_OCP_2, out double dp831_ocp_a_ch2, 0.2);
+            _loadConfigItem(config, CFG_ITEM_OCP_3, out double dp831_ocp_a_ch3, 0.2);
             _loadConfigItem(config, CFG_ITEM_OVP_1, out double dp831_ovp_v_ch1, 0.2);
             _loadConfigItem(config, CFG_ITEM_OVP_2, out double dp831_ovp_v_ch2, 0.2);
+            _loadConfigItem(config, CFG_ITEM_OVP_3, out double dp831_ovp_v_ch3, 0.2);
             _loadConfigItem(config, CFG_ITEM_VSET_1, out double def_vset_1, 0);
             _loadConfigItem(config, CFG_ITEM_VSET_2, out double def_vset_2, 0);
+            _loadConfigItem(config, CFG_ITEM_VSET_3, out double def_vset_3, 0);
 
             #endregion
 
             this.Port = $"USB IVI,{dp800sn}";
 
-            this.PsSingleChannel = new PowerSupplyChannel[2]
+            this.PsSingleChannel = new PowerSupplyChannel[3]
             {
-                new PowerSupplyChannel(VCC_CH, this)
+                new PowerSupplyChannel(DP832A.CHANNEL.CH1, this)
                 {
                     OVPSet = dp831_ovp_v_ch1,
                     OCPSet = dp831_ocp_a_ch1,
                     VoltLevelSet = def_vset_1
                 },
-                new PowerSupplyChannel(VMOD_CH, this)
+                new PowerSupplyChannel(DP832A.CHANNEL.CH2, this)
                 {
                     OVPSet = dp831_ovp_v_ch2,
                     OCPSet = dp831_ocp_a_ch2,
                     VoltLevelSet = def_vset_2
+                },
+                new PowerSupplyChannel(DP832A.CHANNEL.CH3, this)
+                {
+                    OVPSet = dp831_ovp_v_ch3,
+                    OCPSet = dp831_ocp_a_ch3,
+                    VoltLevelSet = def_vset_3
                 }
             };
 
@@ -136,12 +150,14 @@ namespace APAS_Plugin_RIGOL_DP800s
             "Fetch(1)：CH1实时电流（A）。\n" +
             "Fetch(2)：CH2实时电压（V）。\n" +
             "Fetch(3)：CH2实时电流（A）。\n" +
+            "Fetch(4)：CH3实时电压（V）。\n" +
+            "Fetch(5)：CH3实时电流（A）。\n" +
             "支持的命令: \n" +
-            "ON [1|2|ALL]：打开指定通道或全部电源输出；\n" +
-            "OFF [1|2|ALL]：关闭指定通道或所有通道电源输出；\n" +
-            "VLEV [1|2],value：设置指定通道的输出电压，单位V；\n" +
-            "OVP [1|2],value：设置指定通道的保护电压，单位V；\n" +
-            "OCP [1|2],value：设置指定通道的保护电流，单位V；";
+            "ON [1|2|3|ALL]：打开指定通道或全部电源输出；\n" +
+            "OFF [1|2|3|ALL]：关闭指定通道或所有通道电源输出；\n" +
+            "VLEV [1|2|3],value：设置指定通道的输出电压，单位V；\n" +
+            "OVP [1|2|3],value：设置指定通道的保护电压，单位V；\n" +
+            "OCP [1|2|3],value：设置指定通道的保护电流，单位V；";
 
         /// <summary>
         /// 最大测量通道。
@@ -154,7 +170,9 @@ namespace APAS_Plugin_RIGOL_DP800s
                 "CH1电压",
                 "CH1电流",
                 "CH2电压",
-                "CH2电流"
+                "CH2电流",
+                "CH3电压",
+                "CH3电流"
             };
 
         public override bool IsInitialized
@@ -197,10 +215,13 @@ namespace APAS_Plugin_RIGOL_DP800s
                         _setOutput(DP832A.CHANNEL.CH1, true);
                     else if (m.Groups[1].Value == "2")
                         _setOutput(DP832A.CHANNEL.CH2, true);
+                    else if (m.Groups[1].Value == "3")
+                        _setOutput(DP832A.CHANNEL.CH3, true);
                     else  if(m.Groups[1].Value == "ALL")
                     {
                         _setOutput(DP832A.CHANNEL.CH1, true);
                         _setOutput(DP832A.CHANNEL.CH2, true);
+                        _setOutput(DP832A.CHANNEL.CH3, true);
                     }
                     else
                         goto __param_err;
@@ -220,10 +241,13 @@ namespace APAS_Plugin_RIGOL_DP800s
                         _setOutput(DP832A.CHANNEL.CH1, false);
                     else if (m.Groups[1].Value == "2")
                         _setOutput(DP832A.CHANNEL.CH2, false);
+                    else if (m.Groups[1].Value == "3")
+                        _setOutput(DP832A.CHANNEL.CH3, false);
                     else if (m.Groups[1].Value == "ALL")
                     {
                         _setOutput(DP832A.CHANNEL.CH1, false);
                         _setOutput(DP832A.CHANNEL.CH2, false);
+                        _setOutput(DP832A.CHANNEL.CH3, false);
                     }
                     else
                         goto __param_err;
@@ -244,6 +268,8 @@ namespace APAS_Plugin_RIGOL_DP800s
                         ch = DP832A.CHANNEL.CH1;
                     else if (m.Groups[1].Value == "2")
                         ch = DP832A.CHANNEL.CH2;
+                    else if (m.Groups[1].Value == "3")
+                        ch = DP832A.CHANNEL.CH3;
                     else
                         goto __param_err;
 
@@ -268,6 +294,8 @@ namespace APAS_Plugin_RIGOL_DP800s
                         ch = DP832A.CHANNEL.CH1;
                     else if (m.Groups[1].Value == "2")
                         ch = DP832A.CHANNEL.CH2;
+                    else if (m.Groups[1].Value == "3")
+                        ch = DP832A.CHANNEL.CH3;
                     else
                         goto __param_err;
 
@@ -292,6 +320,8 @@ namespace APAS_Plugin_RIGOL_DP800s
                         ch = DP832A.CHANNEL.CH1;
                     else if (m.Groups[1].Value == "2")
                         ch = DP832A.CHANNEL.CH2;
+                    else if (m.Groups[1].Value == "3")
+                        ch = DP832A.CHANNEL.CH3;
                     else
                         goto __param_err;
 
@@ -350,6 +380,12 @@ __param_err:
                         return PsSingleChannel[1].RtVoltage;
 
                     case (int)REMOTE_CTRL_CH.CH2_RT_CURR:
+                        return PsSingleChannel[1].RtCurrent;
+
+                    case (int)REMOTE_CTRL_CH.CH3_RT_VCC:
+                        return PsSingleChannel[1].RtVoltage;
+
+                    case (int)REMOTE_CTRL_CH.CH3_RT_CURR:
                         return PsSingleChannel[1].RtCurrent;
 
                     default:
@@ -461,6 +497,10 @@ __param_err:
                     _saveConfigItem(config, CFG_ITEM_VSET_2, Voltage_V);
                     break;
 
+                case DP832A.CHANNEL.CH3:
+                    _saveConfigItem(config, CFG_ITEM_VSET_3, Voltage_V);
+                    break;
+
                 default:
 
                     break;
@@ -485,6 +525,10 @@ __param_err:
                     _saveConfigItem(config, CFG_ITEM_OVP_2, voltage);
                     break;
 
+                case DP832A.CHANNEL.CH3:
+                    _saveConfigItem(config, CFG_ITEM_OVP_3, voltage);
+                    break;
+
                 default:
 
                     break;
@@ -506,6 +550,10 @@ __param_err:
 
                 case DP832A.CHANNEL.CH2:
                     _saveConfigItem(config, CFG_ITEM_OCP_2, voltage);
+                    break;
+
+                case DP832A.CHANNEL.CH3:
+                    _saveConfigItem(config, CFG_ITEM_OCP_3, voltage);
                     break;
 
                 default:
@@ -607,7 +655,7 @@ __param_err:
 
         private void _loadConfigItem<T>(Configuration config, string itemName, out T holder, T defalutValue)
         {
-            var cfgVal = config.AppSettings.Settings[itemName].Value;
+            var cfgVal = config.AppSettings.Settings[itemName]?.Value;
 
             try
             {
