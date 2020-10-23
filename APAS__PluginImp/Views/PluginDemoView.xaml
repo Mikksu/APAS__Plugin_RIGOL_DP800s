@@ -65,7 +65,7 @@
         
         <GroupBox Grid.Row="1" Grid.Column="2"
                   Header="{Binding PsSingleChannel[2].BindingChannel}" IsEnabled="{Binding IsInitialized}" >
-            <local:PsSingleChannelView DataContext="{Binding PsSingleChannel[1]}"/>
+            <local:PsSingleChannelView DataContext="{Binding PsSingleChannel[2]}"/>
         </GroupBox>
     </Grid>
 </UserControl>

@@ -32,11 +32,11 @@ namespace APAS_Plugin_RIGOL_DP800s
         const DP832A.CHANNEL VCC_CH = DP832A.CHANNEL.CH1;
         const DP832A.CHANNEL VMOD_CH = DP832A.CHANNEL.CH2;
 
-        const string PATTEN_CONTROL_PARAM_ON = @"^ON ([1-2]|ALL)$";
-        const string PATTEN_CONTROL_PARAM_OFF = @"^OFF ([1-2]|ALL)$";
-        const string PATTEN_CONTROL_PARAM_VLEV = @"^VLEV ([1-2]),([0-9]+\.?[0-9]*)$";
-        const string PATTEN_CONTROL_PARAM_OVP = @"^OVP ([1-2]),([0-9]+\.?[0-9]*)$";
-        const string PATTEN_CONTROL_PARAM_OCP = @"^OCP ([1-2]),([0-9]+\.?[0-9]*)$";
+        const string PATTEN_CONTROL_PARAM_ON = @"^ON ([1-3]|ALL)$";
+        const string PATTEN_CONTROL_PARAM_OFF = @"^OFF ([1-3]|ALL)$";
+        const string PATTEN_CONTROL_PARAM_VLEV = @"^VLEV ([1-3]),([0-9]+\.?[0-9]*)$";
+        const string PATTEN_CONTROL_PARAM_OVP = @"^OVP ([1-3]),([0-9]+\.?[0-9]*)$";
+        const string PATTEN_CONTROL_PARAM_OCP = @"^OCP ([1-3]),([0-9]+\.?[0-9]*)$";
 
         const string CFG_ITEM_OCP_1 = "DP831_OCP_A_CH1";
         const string CFG_ITEM_OVP_1 = "DP831_OVP_V_CH1";
