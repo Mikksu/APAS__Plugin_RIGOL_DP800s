@@ -9,8 +9,11 @@ namespace DP800s
         CVisaOpt m_VisaOpt = new CVisaOpt();
 
         public enum OUTPUTMODE { CV,CC,UR}
+
         public enum CHANNEL:int { CH1=1,CH2,CH3}
+
         public enum OPMODE : int {OCP,OVP}
+
         public double[] MeasureValue = new double[3] { 0.0f, 0.0f, 0.0f };  //V,I,P
       
         public void Fetch(object o)

@@ -162,7 +162,7 @@ namespace APAS_Plugin_RIGOL_DP800s
         /// <summary>
         /// 最大测量通道。
         /// </summary>
-        public override int MaxChannel => 4;
+        public override int MaxChannel => 6;
 
         public override string[] ChannelCaption => 
             new string[] 
@@ -366,7 +366,7 @@ __param_err:
         /// <returns>double</returns>
         public override object Fetch(int Channel)
         {
-            if (Channel >= 0 && Channel < MaxChannel - 1)
+            if (Channel >= 0 && Channel < MaxChannel)
             {
                 switch (Channel)
                 {
@@ -383,10 +383,10 @@ __param_err:
                         return PsSingleChannel[1].RtCurrent;
 
                     case (int)REMOTE_CTRL_CH.CH3_RT_VCC:
-                        return PsSingleChannel[1].RtVoltage;
+                        return PsSingleChannel[2].RtVoltage;
 
                     case (int)REMOTE_CTRL_CH.CH3_RT_CURR:
-                        return PsSingleChannel[1].RtCurrent;
+                        return PsSingleChannel[2].RtCurrent;
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(Channel));
