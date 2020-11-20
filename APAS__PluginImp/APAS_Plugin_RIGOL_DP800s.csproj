@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>APAS_Plugin_RIGOL_DP800s</RootNamespace>
     <AssemblyName>APAS_Plugin_RIGOL_DP800s</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <Prefer32bit>false</Prefer32bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,19 +33,21 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32bit>false</Prefer32bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="APAS__CoreLib, Version=1.0.1.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\001 APAS__Main\APAS__PluginContract\APAS__PluginContract\bin\Debug\APAS__CoreLib.dll</HintPath>
     </Reference>
-    <Reference Include="APAS__PluginContract, Version=1.0.20.25, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\001 APAS__Main\APAS__PluginContract\APAS__PluginContract\bin\Debug\APAS__PluginContract.dll</HintPath>
+    <Reference Include="APAS__PluginContract, Version=1.0.21.26, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\APAS__PluginContract.1.0.21.26\lib\net48\APAS__PluginContract.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="APAS__SystemServiceContract, Version=1.0.23.30, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\001 APAS__Main\APAS__PluginContract\APAS__PluginContract\bin\Debug\APAS__SystemServiceContract.dll</HintPath>
+    <Reference Include="APAS__SystemServiceContract, Version=1.0.28.35, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\APAS__SystemServiceContract.1.0.28.35\lib\net48\APAS__SystemServiceContract.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=4.12.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.12.0\lib\net461\MathNet.Numerics.dll</HintPath>
