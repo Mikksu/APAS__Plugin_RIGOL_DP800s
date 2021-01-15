@@ -1,12 +1,10 @@
-﻿using APAS_Plugin_RIGOL_DP800s.Views;
-using DP800s;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Data;
+using DP800s;
 
-namespace APAS_Plugin_RIGOL_DP800s
+namespace APAS__Plugin_RIGOL_DP800s.Classes
 {
     public class PowerSupplyChannel : INotifyPropertyChanged
     {

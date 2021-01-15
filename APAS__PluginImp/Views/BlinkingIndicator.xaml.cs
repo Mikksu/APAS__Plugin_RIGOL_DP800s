@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace APAS_Plugin_RIGOL_DP800s
+namespace APAS__Plugin_RIGOL_DP800s.Views
 {
     /// <summary>
     /// Interaction logic for BlinkingIndicator.xaml

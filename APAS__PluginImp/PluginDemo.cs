@@ -3,7 +3,6 @@ using DP800s;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -11,8 +10,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using SystemServiceContract.Core;
+using APAS__Plugin_RIGOL_DP800s.Classes;
+using APAS__Plugin_RIGOL_DP800s.Views;
 
-namespace APAS_Plugin_RIGOL_DP800s
+namespace APAS__Plugin_RIGOL_DP800s
 {
     public class PluginDemo : PluginMultiChannelMeasurableEquipment
     {

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace APAS_Plugin_RIGOL_DP800s
+namespace APAS__Plugin_RIGOL_DP800s.Views
 {
     public partial class PluginDemoView : UserControl
     {

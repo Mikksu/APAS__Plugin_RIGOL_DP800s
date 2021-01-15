@@ -1,8 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using APAS__Plugin_RIGOL_DP800s.Classes;
 
-namespace APAS_Plugin_RIGOL_DP800s.Views
+namespace APAS__Plugin_RIGOL_DP800s.Views
 {
     /// <summary>
     /// Interaction logic for NumericInputDialog.xaml

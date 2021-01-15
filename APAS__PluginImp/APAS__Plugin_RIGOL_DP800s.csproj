@@ -7,8 +7,8 @@
     <ProjectGuid>{5C60D164-E58D-40B0-9937-00AEBE2E2ED5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>APAS_Plugin_RIGOL_DP800s</RootNamespace>
-    <AssemblyName>APAS_Plugin_RIGOL_DP800s</AssemblyName>
+    <RootNamespace>APAS__Plugin_RIGOL_DP800s</RootNamespace>
+    <AssemblyName>APAS__Plugin_RIGOL_DP800s</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

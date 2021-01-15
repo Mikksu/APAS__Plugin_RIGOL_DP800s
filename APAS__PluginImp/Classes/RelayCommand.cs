@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace APAS_Plugin_RIGOL_DP800s
+namespace APAS__Plugin_RIGOL_DP800s.Classes
 {
     public class RelayCommand : ICommand
     {
