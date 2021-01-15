@@ -88,9 +88,9 @@ namespace APAS__Plugin_RIGOL_DP800s
             _loadConfigItem(_config, CFG_ITEM_OVP_1, out var dp831_ovp_v_ch1, 0.2);
             _loadConfigItem(_config, CFG_ITEM_OVP_2, out var dp831_ovp_v_ch2, 0.2);
             _loadConfigItem(_config, CFG_ITEM_OVP_3, out var dp831_ovp_v_ch3, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0);
-            _loadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0);
-            _loadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0);
+            _loadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0.0);
+            _loadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0.0);
+            _loadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0.0);
 
             #endregion
 
