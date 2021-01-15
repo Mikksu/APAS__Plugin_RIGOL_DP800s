@@ -18,9 +18,11 @@ namespace APAS__Plugin_RIGOL_DP800s
     public class PluginDemo : PluginMultiChannelMeasurableEquipment
     {
 
+        public event EventHandler OnCommOneShot;
+
         #region Variables
 
-        enum REMOTE_CTRL_CH
+        private enum REMOTE_CTRL_CH
         {
             CH1_RT_VCC,
             CH1_RT_CURR,
@@ -30,43 +32,41 @@ namespace APAS__Plugin_RIGOL_DP800s
             CH3_RT_CURR
         }
 
-        const DP832A.CHANNEL VCC_CH = DP832A.CHANNEL.CH1;
-        const DP832A.CHANNEL VMOD_CH = DP832A.CHANNEL.CH2;
+        private const DP832A.CHANNEL VCC_CH = DP832A.CHANNEL.CH1;
+        private const DP832A.CHANNEL VMOD_CH = DP832A.CHANNEL.CH2;
 
-        const string PATTEN_CONTROL_PARAM_ON = @"^ON ([1-3]|ALL)$";
-        const string PATTEN_CONTROL_PARAM_OFF = @"^OFF ([1-3]|ALL)$";
-        const string PATTEN_CONTROL_PARAM_VLEV = @"^VLEV ([1-3]),([0-9]+\.?[0-9]*)$";
-        const string PATTEN_CONTROL_PARAM_OVP = @"^OVP ([1-3]),([0-9]+\.?[0-9]*)$";
-        const string PATTEN_CONTROL_PARAM_OCP = @"^OCP ([1-3]),([0-9]+\.?[0-9]*)$";
+        private const string PATTEN_CONTROL_PARAM_ON = @"^ON ([1-3]|ALL)$";
+        private const string PATTEN_CONTROL_PARAM_OFF = @"^OFF ([1-3]|ALL)$";
+        private const string PATTEN_CONTROL_PARAM_VLEV = @"^VLEV ([1-3]),([0-9]+\.?[0-9]*)$";
+        private const string PATTEN_CONTROL_PARAM_OVP = @"^OVP ([1-3]),([0-9]+\.?[0-9]*)$";
+        private const string PATTEN_CONTROL_PARAM_OCP = @"^OCP ([1-3]),([0-9]+\.?[0-9]*)$";
 
-        const string CFG_ITEM_OCP_1 = "DP831_OCP_A_CH1";
-        const string CFG_ITEM_OVP_1 = "DP831_OVP_V_CH1";
-        const string CFG_ITEM_VSET_1 = "DEF_VSET_CH1";
-        const string CFG_ITEM_OCP_2 = "DP831_OCP_A_CH2";
-        const string CFG_ITEM_OVP_2 = "DP831_OVP_V_CH2";
-        const string CFG_ITEM_VSET_2 = "DEF_VSET_CH2";
-        const string CFG_ITEM_OCP_3 = "DP831_OCP_A_CH3";
-        const string CFG_ITEM_OVP_3 = "DP831_OVP_V_CH3";
-        const string CFG_ITEM_VSET_3 = "DEF_VSET_CH3";
+        private const string CFG_ITEM_OCP_1 = "DP831_OCP_A_CH1";
+        private const string CFG_ITEM_OVP_1 = "DP831_OVP_V_CH1";
+        private const string CFG_ITEM_VSET_1 = "DEF_VSET_CH1";
+        private const string CFG_ITEM_OCP_2 = "DP831_OCP_A_CH2";
+        private const string CFG_ITEM_OVP_2 = "DP831_OVP_V_CH2";
+        private const string CFG_ITEM_VSET_2 = "DEF_VSET_CH2";
+        private const string CFG_ITEM_OCP_3 = "DP831_OCP_A_CH3";
+        private const string CFG_ITEM_OVP_3 = "DP831_OVP_V_CH3";
+        private const string CFG_ITEM_VSET_3 = "DEF_VSET_CH3";
 
-        public event EventHandler OnCommOneShot;
-
-        DP832A dp800 = null;
-        readonly string dp800sn = "";
+        private DP832A _dp800 = null;
+        private readonly string _dp800Sn = "";
 
 
         /// <summary>
         /// how long it takes to wait between the two sampling points.
         /// </summary>
-        int readIntervalms = 200;
+        private readonly int _pollingIntervalMs = 200;
 
-        private Task bgTask;
-        private CancellationTokenSource cts;
-        private CancellationToken ct;
+        private Task _bgTask;
+        private CancellationTokenSource _cts;
+        private CancellationToken _ct;
         private bool _isInit;
-        readonly Configuration config = null;
+        private readonly Configuration _config = null;
 
-        IProgress<DP800ReadingResponse> progress;
+        private readonly IProgress<DP800ReadingResponse> _progress;
 
         #endregion
 
@@ -76,25 +76,25 @@ namespace APAS__Plugin_RIGOL_DP800s
         {
             #region Configuration Reading
 
-            config = GetAppConfig();
+            _config = GetAppConfig();
 
-            _loadConfigItem(config, "ReadIntervalMillisec", out readIntervalms, 200);
+            _loadConfigItem(_config, "ReadIntervalMillisec", out _pollingIntervalMs, 200);
 
-            _loadConfigItem(config, "DP831_SN", out dp800sn, "");
+            _loadConfigItem(_config, "DP831_SN", out _dp800Sn, "");
 
-            _loadConfigItem(config, CFG_ITEM_OCP_1, out double dp831_ocp_a_ch1, 0.2);
-            _loadConfigItem(config, CFG_ITEM_OCP_2, out double dp831_ocp_a_ch2, 0.2);
-            _loadConfigItem(config, CFG_ITEM_OCP_3, out double dp831_ocp_a_ch3, 0.2);
-            _loadConfigItem(config, CFG_ITEM_OVP_1, out double dp831_ovp_v_ch1, 0.2);
-            _loadConfigItem(config, CFG_ITEM_OVP_2, out double dp831_ovp_v_ch2, 0.2);
-            _loadConfigItem(config, CFG_ITEM_OVP_3, out double dp831_ovp_v_ch3, 0.2);
-            _loadConfigItem(config, CFG_ITEM_VSET_1, out double def_vset_1, 0);
-            _loadConfigItem(config, CFG_ITEM_VSET_2, out double def_vset_2, 0);
-            _loadConfigItem(config, CFG_ITEM_VSET_3, out double def_vset_3, 0);
+            _loadConfigItem(_config, CFG_ITEM_OCP_1, out var dp831_ocp_a_ch1, 0.2);
+            _loadConfigItem(_config, CFG_ITEM_OCP_2, out var dp831_ocp_a_ch2, 0.2);
+            _loadConfigItem(_config, CFG_ITEM_OCP_3, out var dp831_ocp_a_ch3, 0.2);
+            _loadConfigItem(_config, CFG_ITEM_OVP_1, out var dp831_ovp_v_ch1, 0.2);
+            _loadConfigItem(_config, CFG_ITEM_OVP_2, out var dp831_ovp_v_ch2, 0.2);
+            _loadConfigItem(_config, CFG_ITEM_OVP_3, out var dp831_ovp_v_ch3, 0.2);
+            _loadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0);
+            _loadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0);
+            _loadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0);
 
             #endregion
 
-            this.Port = $"USB IVI,{dp800sn}";
+            this.Port = $"USB IVI,{_dp800Sn}";
 
             this.PsSingleChannel = new PowerSupplyChannel[3]
             {
@@ -128,7 +128,7 @@ namespace APAS__Plugin_RIGOL_DP800s
 
             //! the progress MUST BE defined in the ctor since
             //! we operate the UI elements in the OnCommOneShot event.
-            progress = new Progress<DP800ReadingResponse>(x =>
+            _progress = new Progress<DP800ReadingResponse>(x =>
             {
                 x.ChannelInstance.IsOutputEnabled = x.IsEnabled;
                 x.ChannelInstance.RtVoltage = x.RtVoltage;
@@ -213,16 +213,16 @@ namespace APAS__Plugin_RIGOL_DP800s
                 if(m.Success)
                 {
                     if (m.Groups[1].Value == "1")
-                        _setOutput(DP832A.CHANNEL.CH1, true);
+                        SetOutput(DP832A.CHANNEL.CH1, true);
                     else if (m.Groups[1].Value == "2")
-                        _setOutput(DP832A.CHANNEL.CH2, true);
+                        SetOutput(DP832A.CHANNEL.CH2, true);
                     else if (m.Groups[1].Value == "3")
-                        _setOutput(DP832A.CHANNEL.CH3, true);
+                        SetOutput(DP832A.CHANNEL.CH3, true);
                     else  if(m.Groups[1].Value == "ALL")
                     {
-                        _setOutput(DP832A.CHANNEL.CH1, true);
-                        _setOutput(DP832A.CHANNEL.CH2, true);
-                        _setOutput(DP832A.CHANNEL.CH3, true);
+                        SetOutput(DP832A.CHANNEL.CH1, true);
+                        SetOutput(DP832A.CHANNEL.CH2, true);
+                        SetOutput(DP832A.CHANNEL.CH3, true);
                     }
                     else
                         goto __param_err;
@@ -239,16 +239,16 @@ namespace APAS__Plugin_RIGOL_DP800s
                 if (m.Success)
                 {
                     if (m.Groups[1].Value == "1")
-                        _setOutput(DP832A.CHANNEL.CH1, false);
+                        SetOutput(DP832A.CHANNEL.CH1, false);
                     else if (m.Groups[1].Value == "2")
-                        _setOutput(DP832A.CHANNEL.CH2, false);
+                        SetOutput(DP832A.CHANNEL.CH2, false);
                     else if (m.Groups[1].Value == "3")
-                        _setOutput(DP832A.CHANNEL.CH3, false);
+                        SetOutput(DP832A.CHANNEL.CH3, false);
                     else if (m.Groups[1].Value == "ALL")
                     {
-                        _setOutput(DP832A.CHANNEL.CH1, false);
-                        _setOutput(DP832A.CHANNEL.CH2, false);
-                        _setOutput(DP832A.CHANNEL.CH3, false);
+                        SetOutput(DP832A.CHANNEL.CH1, false);
+                        SetOutput(DP832A.CHANNEL.CH2, false);
+                        SetOutput(DP832A.CHANNEL.CH3, false);
                     }
                     else
                         goto __param_err;
@@ -261,10 +261,9 @@ namespace APAS__Plugin_RIGOL_DP800s
             else if(Regex.IsMatch(param, PATTEN_CONTROL_PARAM_VLEV)) // Set Output Voltage Level
             {
                 var m = Regex.Match(param, PATTEN_CONTROL_PARAM_VLEV);
+                var ch = DP832A.CHANNEL.CH1;
                 if (m.Success)
                 {
-                    DP832A.CHANNEL ch = DP832A.CHANNEL.CH1;
-
                     if (m.Groups[1].Value == "1")
                         ch = DP832A.CHANNEL.CH1;
                     else if (m.Groups[1].Value == "2")
@@ -275,7 +274,7 @@ namespace APAS__Plugin_RIGOL_DP800s
                         goto __param_err;
 
                     if (double.TryParse(m.Groups[2].Value, out double v))
-                        _setVLevel(ch, v);
+                        SetVLevel(ch, v);
                     else
                         goto __param_err;
                 }
@@ -301,7 +300,7 @@ namespace APAS__Plugin_RIGOL_DP800s
                         goto __param_err;
 
                     if (double.TryParse(m.Groups[2].Value, out double v))
-                        _setOVP(ch, v);
+                        SetOvp(ch, v);
                     else
                         goto __param_err;
                 }
@@ -313,10 +312,9 @@ namespace APAS__Plugin_RIGOL_DP800s
             else if (Regex.IsMatch(param, PATTEN_CONTROL_PARAM_OCP)) // Set OCP
             {
                 var m = Regex.Match(param, PATTEN_CONTROL_PARAM_OCP);
+                var ch = DP832A.CHANNEL.CH1;
                 if (m.Success)
                 {
-                    DP832A.CHANNEL ch = DP832A.CHANNEL.CH1;
-
                     if (m.Groups[1].Value == "1")
                         ch = DP832A.CHANNEL.CH1;
                     else if (m.Groups[1].Value == "2")
@@ -327,7 +325,7 @@ namespace APAS__Plugin_RIGOL_DP800s
                         goto __param_err;
 
                     if (double.TryParse(m.Groups[2].Value, out double v))
-                        _setOCP(ch, v);
+                        SetOcp(ch, v);
                     else
                         goto __param_err;
                 }
@@ -363,13 +361,13 @@ __param_err:
         /// <summary>
         /// 获取指定通道的测量值。
         /// </summary>
-        /// <param name="Channel">0至<see cref="MaxChannel"/>MaxChannel - 1</param>
+        /// <param name="channel">0至<see cref="MaxChannel"/>MaxChannel - 1</param>
         /// <returns>double</returns>
-        public override object Fetch(int Channel)
+        public override object Fetch(int channel)
         {
-            if (Channel >= 0 && Channel < MaxChannel)
+            if (channel >= 0 && channel < MaxChannel)
             {
-                switch (Channel)
+                switch (channel)
                 {
                     case (int)REMOTE_CTRL_CH.CH1_RT_VCC:
                         return PsSingleChannel[0].RtVoltage;
@@ -390,26 +388,24 @@ __param_err:
                         return PsSingleChannel[2].RtCurrent;
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(Channel));
+                        throw new ArgumentOutOfRangeException(nameof(channel));
 
                 }
 
             }
             else
-                throw new ArgumentOutOfRangeException(nameof(Channel));
+                throw new ArgumentOutOfRangeException(nameof(channel));
         }
 
         public override object[] FetchAll()
         {
-            // var rssi = readRssi();
-
-            // FlushTestResult(rssi.Cast<double>().ToArray());
-
-            List<double> ret = new List<double>();
-            ret.Add(PsSingleChannel[0].RtVoltage);
-            ret.Add(PsSingleChannel[0].RtCurrent);
-            ret.Add(PsSingleChannel[1].RtVoltage);
-            ret.Add(PsSingleChannel[1].RtCurrent);
+            var ret = new List<double>
+            {
+                PsSingleChannel[0].RtVoltage,
+                PsSingleChannel[0].RtCurrent,
+                PsSingleChannel[1].RtVoltage,
+                PsSingleChannel[1].RtCurrent
+            };
 
             return ret.Cast<object>().ToArray();
 
@@ -419,8 +415,6 @@ __param_err:
         {
             try
             {
-                // var rssi = readRssi();
-                // FlushTestResult(rssi.Cast<double>().ToArray());
                 return PsSingleChannel[0].RtVoltage;
 
             }
@@ -445,20 +439,18 @@ __param_err:
                 IsEnabled = false;
 
                 // init DP831
-                _init_dp800s();
+                Init_dp800s();
 
                 IsInitialized = true;
                 IsEnabled = true;
 
-                _startBackgroundTask(progress);
+                _startBackgroundTask(_progress);
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // shutdown the 3.3V output.
-        
-                throw ex;
+                throw;
             }
 
         }
@@ -473,33 +465,33 @@ __param_err:
             // Do nothing
         }
 
-        private void _setOutput(DP832A.CHANNEL Channel, bool IsEnable)
+        private void SetOutput(DP832A.CHANNEL channel, bool isEnable)
         {
-            if (dp800 == null)
+            if (_dp800 == null)
                 throw new NullReferenceException("DP800未初始化。");
 
-            dp800.SetOutput(Channel, IsEnable);
+            _dp800.SetOutput(channel, isEnable);
         }
 
-        private void _setVLevel(DP832A.CHANNEL Channel, double Voltage_V)
+        private void SetVLevel(DP832A.CHANNEL channel, double voltageV)
         {
-            if(dp800 == null)
+            if(_dp800 == null)
                 throw new NullReferenceException("DP800未初始化。");
 
-            dp800.SetVoltLevel(Channel, Voltage_V);
+            _dp800.SetVoltLevel(channel, voltageV);
 
-            switch(Channel)
+            switch(channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    _saveConfigItem(config, CFG_ITEM_VSET_1, Voltage_V);
+                    _saveConfigItem(_config, CFG_ITEM_VSET_1, voltageV);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    _saveConfigItem(config, CFG_ITEM_VSET_2, Voltage_V);
+                    _saveConfigItem(_config, CFG_ITEM_VSET_2, voltageV);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    _saveConfigItem(config, CFG_ITEM_VSET_3, Voltage_V);
+                    _saveConfigItem(_config, CFG_ITEM_VSET_3, voltageV);
                     break;
 
                 default:
@@ -509,25 +501,25 @@ __param_err:
             
         }
 
-        private void _setOVP(DP832A.CHANNEL Channel, double voltage)
+        private void SetOvp(DP832A.CHANNEL channel, double voltage)
         {
-            if (dp800 == null)
+            if (_dp800 == null)
                 throw new NullReferenceException("DP800未初始化。");
 
-            dp800.SetProtection(DP832A.OPMODE.OVP, Channel, voltage);
+            _dp800.SetProtection(DP832A.OPMODE.OVP, channel, voltage);
 
-            switch (Channel)
+            switch (channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    _saveConfigItem(config, CFG_ITEM_OVP_1, voltage);
+                    _saveConfigItem(_config, CFG_ITEM_OVP_1, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    _saveConfigItem(config, CFG_ITEM_OVP_2, voltage);
+                    _saveConfigItem(_config, CFG_ITEM_OVP_2, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    _saveConfigItem(config, CFG_ITEM_OVP_3, voltage);
+                    _saveConfigItem(_config, CFG_ITEM_OVP_3, voltage);
                     break;
 
                 default:
@@ -536,25 +528,25 @@ __param_err:
             }
         }
 
-        private void _setOCP(DP832A.CHANNEL Channel, double voltage)
+        private void SetOcp(DP832A.CHANNEL channel, double voltage)
         {
-            if (dp800 == null)
+            if (_dp800 == null)
                 throw new NullReferenceException("DP800未初始化。");
 
-            dp800.SetProtection(DP832A.OPMODE.OCP, Channel, voltage);
+            _dp800.SetProtection(DP832A.OPMODE.OCP, channel, voltage);
 
-            switch (Channel)
+            switch (channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    _saveConfigItem(config, CFG_ITEM_OCP_1, voltage);
+                    _saveConfigItem(_config, CFG_ITEM_OCP_1, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    _saveConfigItem(config, CFG_ITEM_OCP_2, voltage);
+                    _saveConfigItem(_config, CFG_ITEM_OCP_2, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    _saveConfigItem(config, CFG_ITEM_OCP_3, voltage);
+                    _saveConfigItem(_config, CFG_ITEM_OCP_3, voltage);
                     break;
 
                 default:
@@ -563,29 +555,29 @@ __param_err:
             }
         }
 
-        private void _init_dp800s()
+        private void Init_dp800s()
         {
-            dp800 = new DP832A();
-            dp800.Init(dp800sn);
+            _dp800 = new DP832A();
+            _dp800.Init(_dp800Sn);
 
             foreach (var pschannel in PsSingleChannel)
             {
-                dp800.SetProtection(DP832A.OPMODE.OVP, pschannel.BindingChannel, pschannel.OVPSet);
-                dp800.SetProtection(DP832A.OPMODE.OCP, pschannel.BindingChannel, pschannel.OCPSet);
-                dp800.SetCurrentLevel(pschannel.BindingChannel, pschannel.OCPSet);
-                dp800.SetVoltLevel(pschannel.BindingChannel, pschannel.VoltLevelSet);
-                dp800.SetOutput(pschannel.BindingChannel, false);
+                _dp800.SetProtection(DP832A.OPMODE.OVP, pschannel.BindingChannel, pschannel.OVPSet);
+                _dp800.SetProtection(DP832A.OPMODE.OCP, pschannel.BindingChannel, pschannel.OCPSet);
+                _dp800.SetCurrentLevel(pschannel.BindingChannel, pschannel.OCPSet);
+                _dp800.SetVoltLevel(pschannel.BindingChannel, pschannel.VoltLevelSet);
+                _dp800.SetOutput(pschannel.BindingChannel, false);
             }
         }
 
         private void _startBackgroundTask(IProgress<DP800ReadingResponse> progress = null)
         {
-            if (bgTask == null || bgTask.IsCompleted)
+            if (_bgTask == null || _bgTask.IsCompleted)
             {
-                cts = new CancellationTokenSource();
-                ct = cts.Token;
+                _cts = new CancellationTokenSource();
+                _ct = _cts.Token;
 
-                bgTask = Task.Run(() =>
+                _bgTask = Task.Run(() =>
                 {
                     // wait for 2s to ensure the UI is initialized completely.
                     Thread.Sleep(2000);
@@ -595,7 +587,7 @@ __param_err:
                         try
                         {
                             // check if the DP800 is initialized.
-                            if (dp800 == null)
+                            if (_dp800 == null)
                             {
                                 IsInitialized = false;
                                 IsEnabled = false;
@@ -605,8 +597,8 @@ __param_err:
                             foreach (var ch in PsSingleChannel)
                             {
                                 // read from the DP800s
-                                var isEnabled = dp800.GetOutputState(ch.BindingChannel);
-                                dp800.Fetch(ch.BindingChannel);
+                                var isEnabled = _dp800.GetOutputState(ch.BindingChannel);
+                                _dp800.Fetch(ch.BindingChannel);
 
                                 // Update the UI elements in UI thread context.
 
@@ -614,47 +606,47 @@ __param_err:
                                 {
                                     ChannelInstance = ch,
                                     IsEnabled = isEnabled,
-                                    RtVoltage = dp800.MeasureValue[0],
-                                    RtCurrent = dp800.MeasureValue[1],
-                                    RtWatt = dp800.MeasureValue[2]
+                                    RtVoltage = _dp800.MeasureValue[0],
+                                    RtCurrent = _dp800.MeasureValue[1],
+                                    RtWatt = _dp800.MeasureValue[2]
                                 });
                             }
                         }
                         catch (Exception)
                         {
-
+                            // ignored
                         }
 
-                        if (ct.IsCancellationRequested)
+                        if (_ct.IsCancellationRequested)
                             return;
 
-                        Thread.Sleep(this.readIntervalms);
+                        Thread.Sleep(this._pollingIntervalMs);
 
-                        if (ct.IsCancellationRequested)
+                        if (_ct.IsCancellationRequested)
                             return;
                     }
-                });
+                }, _ct);
             }
         }
 
         private void _stopBackgroundTask()
         {
-            if (bgTask != null)
+            if (_bgTask != null)
             {
                 // 结束背景线程
-                cts?.Cancel();
+                _cts?.Cancel();
 
                 //! 延时，确保背景线程正确退出
                 Thread.Sleep(500);
 
-                bgTask = null;
+                _bgTask = null;
             }
 
             this.IsInitialized = false;
             this.IsEnabled = false;
         }
 
-        private void _loadConfigItem<T>(Configuration config, string itemName, out T holder, T defalutValue)
+        private void _loadConfigItem<T>(Configuration config, string itemName, out T holder, T defaultValue)
         {
             var cfgVal = config.AppSettings.Settings[itemName]?.Value;
 
@@ -664,7 +656,7 @@ __param_err:
             }
             catch(Exception ex)
             {
-                holder = defalutValue;
+                holder = defaultValue;
                 APASService?.__SSC_LogError($"Unable to load the config item [{itemName}] of plugin [{this.Name}], {ex.Message}");
             }
         }
@@ -696,8 +688,7 @@ __param_err:
                 {
                     try
                     {
-                        if (cts != null)
-                            cts.Cancel();
+                        _cts?.Cancel();
 
                         Init();
                     }
@@ -713,7 +704,7 @@ __param_err:
         #endregion
     }
 
-    class DP800ReadingResponse
+    internal class DP800ReadingResponse
     {
         public PowerSupplyChannel ChannelInstance { get; set; }
 

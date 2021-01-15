@@ -37,20 +37,18 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="APAS__CoreLib, Version=1.0.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\001 APAS__Main\APAS__PluginContract\APAS__PluginContract\bin\Debug\APAS__CoreLib.dll</HintPath>
+    <Reference Include="APAS__CoreLib, Version=1.0.2.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\APAS__CoreLib.1.0.2.2\lib\net48\APAS__CoreLib.dll</HintPath>
     </Reference>
     <Reference Include="APAS__PluginContract, Version=1.0.21.26, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\APAS__PluginContract.1.0.21.26\lib\net48\APAS__PluginContract.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="APAS__SystemServiceContract, Version=1.0.28.35, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\APAS__SystemServiceContract.1.0.28.35\lib\net48\APAS__SystemServiceContract.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="APAS__SystemServiceContract, Version=1.0.29.36, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\APAS__SystemServiceContract.1.0.29.36\lib\net48\APAS__SystemServiceContract.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.12.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MathNet.Numerics.4.12.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.15.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.15.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
@@ -104,9 +102,7 @@
     <Compile Include="Classes\RelayCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
