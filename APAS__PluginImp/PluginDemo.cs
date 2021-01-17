@@ -207,6 +207,9 @@ namespace APAS__Plugin_RIGOL_DP800s
         /// <returns></returns>
         public sealed override async Task Control(string param)
         {
+            if (!this.IsInitialized)
+                throw new InvalidOperationException("DP800电源未初始化。");
+
             if (Regex.IsMatch(param, PATTEN_CONTROL_PARAM_ON)) // "ON"
             {
                 var m = Regex.Match(param, PATTEN_CONTROL_PARAM_ON);
