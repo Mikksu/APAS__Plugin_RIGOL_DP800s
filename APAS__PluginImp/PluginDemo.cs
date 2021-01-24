@@ -12,6 +12,7 @@ using System.Windows;
 using SystemServiceContract.Core;
 using APAS__Plugin_RIGOL_DP800s.Classes;
 using APAS__Plugin_RIGOL_DP800s.Views;
+using APAS__PluginContract.Core;
 
 namespace APAS__Plugin_RIGOL_DP800s
 {
@@ -78,19 +79,19 @@ namespace APAS__Plugin_RIGOL_DP800s
 
             _config = GetAppConfig();
 
-            _loadConfigItem(_config, "ReadIntervalMillisec", out _pollingIntervalMs, 200);
+            PluginBase.LoadConfigItem(_config, "ReadIntervalMillisec", out _pollingIntervalMs, 200);
 
-            _loadConfigItem(_config, "DP831_SN", out _dp800Sn, "");
+            PluginBase.LoadConfigItem(_config, "DP831_SN", out _dp800Sn, "");
 
-            _loadConfigItem(_config, CFG_ITEM_OCP_1, out var dp831_ocp_a_ch1, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_OCP_2, out var dp831_ocp_a_ch2, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_OCP_3, out var dp831_ocp_a_ch3, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_OVP_1, out var dp831_ovp_v_ch1, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_OVP_2, out var dp831_ovp_v_ch2, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_OVP_3, out var dp831_ovp_v_ch3, 0.2);
-            _loadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0.0);
-            _loadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0.0);
-            _loadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0.0);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_OCP_1, out var dp831_ocp_a_ch1, 0.2);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_OCP_2, out var dp831_ocp_a_ch2, 0.2);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_OCP_3, out var dp831_ocp_a_ch3, 0.2);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_OVP_1, out var dp831_ovp_v_ch1, 0.2);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_OVP_2, out var dp831_ovp_v_ch2, 0.2);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_OVP_3, out var dp831_ovp_v_ch3, 0.2);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0.0);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0.0);
+            PluginBase.LoadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0.0);
 
             #endregion
 
@@ -486,15 +487,15 @@ __param_err:
             switch(channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    _saveConfigItem(_config, CFG_ITEM_VSET_1, voltageV);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_VSET_1, voltageV);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    _saveConfigItem(_config, CFG_ITEM_VSET_2, voltageV);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_VSET_2, voltageV);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    _saveConfigItem(_config, CFG_ITEM_VSET_3, voltageV);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_VSET_3, voltageV);
                     break;
 
                 default:
@@ -514,15 +515,15 @@ __param_err:
             switch (channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    _saveConfigItem(_config, CFG_ITEM_OVP_1, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OVP_1, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    _saveConfigItem(_config, CFG_ITEM_OVP_2, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OVP_2, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    _saveConfigItem(_config, CFG_ITEM_OVP_3, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OVP_3, voltage);
                     break;
 
                 default:
@@ -541,15 +542,15 @@ __param_err:
             switch (channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    _saveConfigItem(_config, CFG_ITEM_OCP_1, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_1, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    _saveConfigItem(_config, CFG_ITEM_OCP_2, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_2, voltage);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    _saveConfigItem(_config, CFG_ITEM_OCP_3, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_3, voltage);
                     break;
 
                 default:
@@ -647,36 +648,6 @@ __param_err:
 
             this.IsInitialized = false;
             this.IsEnabled = false;
-        }
-
-        private void _loadConfigItem<T>(Configuration config, string itemName, out T holder, T defaultValue)
-        {
-            var cfgVal = config.AppSettings.Settings[itemName]?.Value;
-
-            try
-            {
-                holder = (T)Convert.ChangeType(cfgVal, typeof(T));
-            }
-            catch(Exception ex)
-            {
-                holder = defaultValue;
-                APASService?.__SSC_LogError($"Unable to load the config item [{itemName}] of plugin [{this.Name}], {ex.Message}");
-            }
-        }
-
-        private void _saveConfigItem<T>(Configuration config, string itemName, T value)
-        {
-            var cfg = config.AppSettings.Settings[itemName];
-            if(cfg == null)
-            {
-                config.AppSettings.Settings.Add(new KeyValueConfigurationElement(itemName, value.ToString()));
-            }
-            else
-            {
-                cfg.Value = value.ToString();
-            }
-
-            config.Save(ConfigurationSaveMode.Modified);
         }
 
         #endregion

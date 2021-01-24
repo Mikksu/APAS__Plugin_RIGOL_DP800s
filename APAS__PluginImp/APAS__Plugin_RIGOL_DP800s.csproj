@@ -37,12 +37,11 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="APAS__CoreLib, Version=1.0.2.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\APAS__CoreLib.1.0.2.2\lib\net48\APAS__CoreLib.dll</HintPath>
+    <Reference Include="APAS__CoreLib, Version=1.0.4.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\APAS__CoreLib.1.0.4.4\lib\net48\APAS__CoreLib.dll</HintPath>
     </Reference>
-    <Reference Include="APAS__PluginContract, Version=1.0.21.26, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\APAS__PluginContract.1.0.21.26\lib\net48\APAS__PluginContract.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="APAS__PluginContract, Version=1.0.22.28, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\APAS__PluginContract.1.0.22.28\lib\net48\APAS__PluginContract.dll</HintPath>
     </Reference>
     <Reference Include="APAS__SystemServiceContract, Version=1.0.29.36, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\APAS__SystemServiceContract.1.0.29.36\lib\net48\APAS__SystemServiceContract.dll</HintPath>
