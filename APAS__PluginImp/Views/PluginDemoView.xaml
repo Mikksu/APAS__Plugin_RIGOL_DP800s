@@ -37,7 +37,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/APAS_Plugin_RIGOL_DP800s;component/Resources/rigol_logo.png"
+                <Image Source="/APAS__Plugin_RIGOL_DP800s;component/Resources/rigol_logo.png"
                         VerticalAlignment="Stretch" HorizontalAlignment="Left" Margin="5,3,0,5"/>
                 <views:BlinkingIndicator x:Name="blinkIndicator" Height="3" Width="3" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
 

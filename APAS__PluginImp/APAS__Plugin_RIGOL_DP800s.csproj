@@ -37,14 +37,23 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="APAS__CoreLib, Version=1.0.4.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\APAS__CoreLib.1.0.4.4\lib\net48\APAS__CoreLib.dll</HintPath>
+    <Reference Include="APAS__CoreLib">
+      <HintPath>..\..\..\001 APAS__Main\APAS\bin\Debug\APAS__CoreLib.dll</HintPath>
     </Reference>
-    <Reference Include="APAS__PluginContract, Version=1.0.22.28, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\APAS__PluginContract.1.0.22.28\lib\net48\APAS__PluginContract.dll</HintPath>
+    <Reference Include="APAS__PluginContract">
+      <HintPath>..\..\..\001 APAS__Main\APAS\bin\Debug\APAS__PluginContract.dll</HintPath>
     </Reference>
-    <Reference Include="APAS__SystemServiceContract, Version=1.0.29.36, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\APAS__SystemServiceContract.1.0.29.36\lib\net48\APAS__SystemServiceContract.dll</HintPath>
+    <Reference Include="APAS__SystemServiceContract">
+      <HintPath>..\..\..\001 APAS__Main\APAS\bin\Debug\APAS__SystemServiceContract.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonMark, Version=0.1.0.0, Culture=neutral, PublicKeyToken=001ef8810438905d, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonMark.NET.0.15.1\lib\net45\CommonMark.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.30.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.30\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownRender, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MarkdownRender.1.0.0\lib\net48\MarkdownRender.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=4.15.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.15.0\lib\net461\MathNet.Numerics.dll</HintPath>
@@ -65,21 +74,15 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DP800ReadingResponse.cs" />
     <Compile Include="Converters\ReverseBoolConverter.cs" />
     <Compile Include="DP800s\CVissaOpt.cs" />
     <Compile Include="DP800s\DP832A.cs" />
@@ -128,10 +131,11 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dependencies\halcondotnet.dll" />
     <Content Include="Dependencies\NationalInstruments.Common.dll" />
     <Content Include="Dependencies\NationalInstruments.VisaNS.dll" />
-    <Content Include="lib\halcondotnet.dll" />
+    <Content Include="Resources\mainFrame.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\rigol_logo.png" />
   </ItemGroup>
   <ItemGroup />

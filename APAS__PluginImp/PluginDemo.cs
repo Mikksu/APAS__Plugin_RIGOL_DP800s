@@ -1,4 +1,7 @@
-﻿using APAS__PluginContract.ImplementationBase;
+﻿using APAS__Plugin_RIGOL_DP800s.Classes;
+using APAS__Plugin_RIGOL_DP800s.Views;
+using APAS__PluginContract.Core;
+using APAS__PluginContract.ImplementationBase;
 using DP800s;
 using System;
 using System.Collections.Generic;
@@ -10,15 +13,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using SystemServiceContract.Core;
-using APAS__Plugin_RIGOL_DP800s.Classes;
-using APAS__Plugin_RIGOL_DP800s.Views;
-using APAS__PluginContract.Core;
 
 namespace APAS__Plugin_RIGOL_DP800s
 {
+    /// <inheritdoc />
     public class PluginDemo : PluginMultiChannelMeasurableEquipment
     {
-
         public event EventHandler OnCommOneShot;
 
         #region Variables
@@ -32,7 +32,7 @@ namespace APAS__Plugin_RIGOL_DP800s
             CH3_RT_VCC,
             CH3_RT_CURR
         }
-
+        
         private const DP832A.CHANNEL VCC_CH = DP832A.CHANNEL.CH1;
         private const DP832A.CHANNEL VMOD_CH = DP832A.CHANNEL.CH2;
 
@@ -52,8 +52,8 @@ namespace APAS__Plugin_RIGOL_DP800s
         private const string CFG_ITEM_OVP_3 = "DP831_OVP_V_CH3";
         private const string CFG_ITEM_VSET_3 = "DEF_VSET_CH3";
 
-        private DP832A _dp800 = null;
-        private readonly string _dp800Sn = "";
+        private DP832A _dp800;
+        private readonly string _dp800Sn;
 
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace APAS__Plugin_RIGOL_DP800s
         private CancellationTokenSource _cts;
         private CancellationToken _ct;
         private bool _isInit;
-        private readonly Configuration _config = null;
+        private readonly Configuration _config;
 
         private readonly IProgress<DP800ReadingResponse> _progress;
 
@@ -73,7 +73,8 @@ namespace APAS__Plugin_RIGOL_DP800s
 
         #region Constructors
 
-        public PluginDemo(ISystemService APASService) : base(Assembly.GetExecutingAssembly(), APASService)
+        public PluginDemo(ISystemService APASService) : base(Assembly.GetExecutingAssembly(), APASService, 6,
+            new string[] { "CH1电压", "CH1电流", "CH2电压", "CH2电流", "CH3电压", "CH3电流" })
         {
             #region Configuration Reading
 
@@ -144,49 +145,31 @@ namespace APAS__Plugin_RIGOL_DP800s
 
         #region Properties
 
-        public override string Name => "RIGOL DP800s";
+        public override string Caption => "RIGOL DP800s";
 
-        public override string Usage =>
-            "普源DP800系列直流电源控制程序。\n" +
-            "Fetch(0)：CH1实时电压（V）。\n" +
-            "Fetch(1)：CH1实时电流（A）。\n" +
-            "Fetch(2)：CH2实时电压（V）。\n" +
-            "Fetch(3)：CH2实时电流（A）。\n" +
-            "Fetch(4)：CH3实时电压（V）。\n" +
-            "Fetch(5)：CH3实时电流（A）。\n" +
-            "支持的命令: \n" +
-            "ON [1|2|3|ALL]：打开指定通道或全部电源输出；\n" +
-            "OFF [1|2|3|ALL]：关闭指定通道或所有通道电源输出；\n" +
-            "VLEV [1|2|3],value：设置指定通道的输出电压，单位V；\n" +
-            "OVP [1|2|3],value：设置指定通道的保护电压，单位V；\n" +
-            "OCP [1|2|3],value：设置指定通道的保护电流，单位V；";
+        public override string ShortCaption => "DP800s";
 
-        /// <summary>
-        /// 最大测量通道。
-        /// </summary>
-        public override int MaxChannel => 6;
+        public override string Description => "普源DP800系列直流电源控制插件";
 
-        public override string[] ChannelCaption => 
-            new string[] 
-            {
-                "CH1电压",
-                "CH1电流",
-                "CH2电压",
-                "CH2电流",
-                "CH3电压",
-                "CH3电流"
-            };
+        // public override string Usage =>
+        //     "普源DP800系列直流电源控制程序。\n" +
+        //     "Fetch(0)：CH1实时电压（V）。\n" +
+        //     "Fetch(1)：CH1实时电流（A）。\n" +
+        //     "Fetch(2)：CH2实时电压（V）。\n" +
+        //     "Fetch(3)：CH2实时电流（A）。\n" +
+        //     "Fetch(4)：CH3实时电压（V）。\n" +
+        //     "Fetch(5)：CH3实时电流（A）。\n" +
+        //     "支持的命令: \n" +
+        //     "ON [1|2|3|ALL]：打开指定通道或全部电源输出；\n" +
+        //     "OFF [1|2|3|ALL]：关闭指定通道或所有通道电源输出；\n" +
+        //     "VLEV [1|2|3],value：设置指定通道的输出电压，单位V；\n" +
+        //     "OVP [1|2|3],value：设置指定通道的保护电压，单位V；\n" +
+        //     "OCP [1|2|3],value：设置指定通道的保护电流，单位V；";
 
         public override bool IsInitialized
         {
-            get
-            {
-                return _isInit;
-            }
-            protected set
-            {
-                UpdateProperty(ref _isInit, value);
-            }
+            get => _isInit;
+            protected set => SetProperty(ref _isInit, value);
         }
 
         public PowerSupplyChannel[] PsSingleChannel { get; }
@@ -469,6 +452,10 @@ __param_err:
             // Do nothing
         }
 
+        #endregion
+
+        #region Private Methods
+
         private void SetOutput(DP832A.CHANNEL channel, bool isEnable)
         {
             if (_dp800 == null)
@@ -676,18 +663,5 @@ __param_err:
         }
 
         #endregion
-    }
-
-    internal class DP800ReadingResponse
-    {
-        public PowerSupplyChannel ChannelInstance { get; set; }
-
-        public bool IsEnabled { get; set; }
-
-        public double RtVoltage { get; set; }
-
-        public double RtCurrent { get; set; }
-
-        public double RtWatt { get; set; }
     }
 }
