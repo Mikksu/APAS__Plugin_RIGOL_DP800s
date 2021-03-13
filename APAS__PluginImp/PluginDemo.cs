@@ -519,25 +519,26 @@ __param_err:
             }
         }
 
-        private void SetOcp(DP832A.CHANNEL channel, double voltage)
+        private void SetOcp(DP832A.CHANNEL channel, double curr)
         {
             if (_dp800 == null)
                 throw new NullReferenceException("DP800未初始化。");
 
-            _dp800.SetProtection(DP832A.OPMODE.OCP, channel, voltage);
+            _dp800.SetProtection(DP832A.OPMODE.OCP, channel, curr);
+            _dp800.SetCurrentLevel(channel, curr);
 
             switch (channel)
             {
                 case DP832A.CHANNEL.CH1:
-                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_1, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_1, curr);
                     break;
 
                 case DP832A.CHANNEL.CH2:
-                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_2, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_2, curr);
                     break;
 
                 case DP832A.CHANNEL.CH3:
-                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_3, voltage);
+                    PluginBase.SaveConfigItem(_config, CFG_ITEM_OCP_3, curr);
                     break;
 
                 default:
@@ -557,7 +558,10 @@ __param_err:
                 _dp800.SetProtection(DP832A.OPMODE.OCP, pschannel.BindingChannel, pschannel.OCPSet);
                 _dp800.SetCurrentLevel(pschannel.BindingChannel, pschannel.OCPSet);
                 _dp800.SetVoltLevel(pschannel.BindingChannel, pschannel.VoltLevelSet);
-                _dp800.SetOutput(pschannel.BindingChannel, false);
+
+                // DO NOT change the output status, just sync it.
+                var stat = _dp800.GetOutputState(pschannel.BindingChannel);
+                pschannel.IsOutputEnabled = stat;
             }
         }
 
