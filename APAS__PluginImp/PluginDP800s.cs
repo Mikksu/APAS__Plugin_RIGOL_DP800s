@@ -1,9 +1,4 @@
-﻿using APAS__Plugin_RIGOL_DP800s.Classes;
-using APAS__Plugin_RIGOL_DP800s.Views;
-using APAS__PluginContract.Core;
-using APAS__PluginContract.ImplementationBase;
-using DP800s;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -12,12 +7,17 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using SystemServiceContract.Core;
+using APAS.Plugin.RIGOL.DP800s.Core;
+using APAS.Plugin.RIGOL.DP800s.DP800s;
+using APAS.Plugin.RIGOL.DP800s.Views;
+using APAS.Plugin.Sdk.Base;
+using APAS.ServiceContract.Wcf;
+using log4net;
 
-namespace APAS__Plugin_RIGOL_DP800s
+namespace APAS.Plugin.RIGOL.DP800s
 {
     /// <inheritdoc />
-    public class PluginDemo : PluginMultiChannelMeasurableEquipment
+    public class PluginDP800s : PluginMultiChannelMeasurableEquipment
     {
         public event EventHandler OnCommOneShot;
 
@@ -73,32 +73,33 @@ namespace APAS__Plugin_RIGOL_DP800s
 
         #region Constructors
 
-        public PluginDemo(ISystemService APASService) : base(Assembly.GetExecutingAssembly(), APASService, 6,
-            new string[] { "CH1电压", "CH1电流", "CH2电压", "CH2电流", "CH3电压", "CH3电流" })
+        public PluginDP800s(ISystemService apasService, string instanceConfigFile, ILog logger)
+            : base(apasService, instanceConfigFile, 6,
+                new[] { "CH1电压", "CH1电流", "CH2电压", "CH2电流", "CH3电压", "CH3电流" }, logger)
         {
             #region Configuration Reading
 
             _config = GetAppConfig();
 
-            PluginBase.LoadConfigItem(_config, "ReadIntervalMillisec", out _pollingIntervalMs, 200);
+            LoadConfigItem(_config, "ReadIntervalMillisec", out _pollingIntervalMs, 200);
 
-            PluginBase.LoadConfigItem(_config, "DP831_SN", out _dp800Sn, "");
+            LoadConfigItem(_config, "DP831_SN", out _dp800Sn, "");
 
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_OCP_1, out var dp831_ocp_a_ch1, 0.2);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_OCP_2, out var dp831_ocp_a_ch2, 0.2);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_OCP_3, out var dp831_ocp_a_ch3, 0.2);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_OVP_1, out var dp831_ovp_v_ch1, 0.2);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_OVP_2, out var dp831_ovp_v_ch2, 0.2);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_OVP_3, out var dp831_ovp_v_ch3, 0.2);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0.0);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0.0);
-            PluginBase.LoadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0.0);
+            LoadConfigItem(_config, CFG_ITEM_OCP_1, out var dp831_ocp_a_ch1, 0.2);
+            LoadConfigItem(_config, CFG_ITEM_OCP_2, out var dp831_ocp_a_ch2, 0.2);
+            LoadConfigItem(_config, CFG_ITEM_OCP_3, out var dp831_ocp_a_ch3, 0.2);
+            LoadConfigItem(_config, CFG_ITEM_OVP_1, out var dp831_ovp_v_ch1, 0.2);
+            LoadConfigItem(_config, CFG_ITEM_OVP_2, out var dp831_ovp_v_ch2, 0.2);
+            LoadConfigItem(_config, CFG_ITEM_OVP_3, out var dp831_ovp_v_ch3, 0.2);
+            LoadConfigItem(_config, CFG_ITEM_VSET_1, out var def_vset_1, 0.0);
+            LoadConfigItem(_config, CFG_ITEM_VSET_2, out var def_vset_2, 0.0);
+            LoadConfigItem(_config, CFG_ITEM_VSET_3, out var def_vset_3, 0.0);
 
             #endregion
 
-            this.Port = $"USB IVI,{_dp800Sn}";
+            Port = $"USB IVI,{_dp800Sn}";
 
-            this.PsSingleChannel = new PowerSupplyChannel[3]
+            PsSingleChannel = new PowerSupplyChannel[3]
             {
                 new PowerSupplyChannel(DP832A.CHANNEL.CH1, this)
                 {
@@ -121,12 +122,12 @@ namespace APAS__Plugin_RIGOL_DP800s
             };
 
 
-            this.UserView = new PluginDemoView
+            UserView = new PluginDemoView
             {
                 DataContext = this
             };
 
-            this.HasView = true;
+            HasView = true;
 
             //! the progress MUST BE defined in the ctor since
             //! we operate the UI elements in the OnCommOneShot event.
@@ -137,7 +138,7 @@ namespace APAS__Plugin_RIGOL_DP800s
                 x.ChannelInstance.RtCurrent = x.RtCurrent;
                 x.ChannelInstance.RtWatt = x.RtWatt;
 
-                OnCommOneShot?.Invoke(this, new EventArgs());
+                OnCommOneShot?.Invoke(this, EventArgs.Empty);
             });
         }
 
@@ -145,10 +146,7 @@ namespace APAS__Plugin_RIGOL_DP800s
 
         #region Properties
 
-        public override string Caption => "RIGOL DP800s";
-
-        public override string ShortCaption => "DP800s";
-
+        
         public override string Description => "普源DP800系列直流电源控制插件";
 
         // public override string Usage =>

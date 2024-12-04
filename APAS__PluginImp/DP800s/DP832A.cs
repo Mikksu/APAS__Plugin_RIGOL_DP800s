@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace DP800s
+namespace APAS.Plugin.RIGOL.DP800s.DP800s
 {
     public class DP832A 
     {

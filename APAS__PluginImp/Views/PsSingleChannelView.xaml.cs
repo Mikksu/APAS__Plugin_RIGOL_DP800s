@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace APAS__Plugin_RIGOL_DP800s.Views
+namespace APAS.Plugin.RIGOL.DP800s.Views
 {
     /// <summary>
     /// Interaction logic for PsSingleChannelView.xaml

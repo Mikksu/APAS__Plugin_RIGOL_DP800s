@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace APAS__Plugin_RIGOL_DP800s.Converters
+namespace APAS.Plugin.RIGOL.DP800s.Converters
 {
     public class ReverseBoolConverter : IValueConverter
     {

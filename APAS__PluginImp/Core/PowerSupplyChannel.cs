@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using DP800s;
+using APAS.Plugin.RIGOL.DP800s.DP800s;
 
-namespace APAS__Plugin_RIGOL_DP800s.Classes
+namespace APAS.Plugin.RIGOL.DP800s.Core
 {
     public class PowerSupplyChannel : INotifyPropertyChanged
     {
@@ -20,7 +20,7 @@ namespace APAS__Plugin_RIGOL_DP800s.Classes
 
         #region Constructors
 
-        public PowerSupplyChannel(DP832A.CHANNEL BindingChannel, PluginDemo Parent)
+        public PowerSupplyChannel(DP832A.CHANNEL BindingChannel, PluginDP800s Parent)
         {
             this.Parent = Parent;
             this.BindingChannel = BindingChannel;
@@ -30,7 +30,7 @@ namespace APAS__Plugin_RIGOL_DP800s.Classes
 
         #region Properties
 
-        public PluginDemo Parent { get; }
+        public PluginDP800s Parent { get; }
 
         public DP832A.CHANNEL BindingChannel { get; }
 

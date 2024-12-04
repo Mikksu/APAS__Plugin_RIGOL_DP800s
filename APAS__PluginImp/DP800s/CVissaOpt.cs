@@ -1,7 +1,7 @@
-﻿using NationalInstruments.VisaNS;
-using System;
+﻿using System;
+using NationalInstruments.VisaNS;
 
-namespace DP800s
+namespace APAS.Plugin.RIGOL.DP800s.DP800s
 {
     public class CVisaOpt 
     {

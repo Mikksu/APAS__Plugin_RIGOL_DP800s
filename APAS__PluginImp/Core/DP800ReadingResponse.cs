@@ -1,4 +1,4 @@
-﻿namespace APAS__Plugin_RIGOL_DP800s.Classes
+﻿namespace APAS.Plugin.RIGOL.DP800s.Core
 {
     // ReSharper disable once InconsistentNaming
     internal class DP800ReadingResponse

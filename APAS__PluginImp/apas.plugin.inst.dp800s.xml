@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<PluginInstConfig Name="DP800" ShortName="DP800">
+    <!-- 通讯接口类型： GPIB/RS232 -->
+    <CommType>RS232</CommType>
+    <PortName>COM1</PortName>
+    <BaudRate>9600</BaudRate>
+    <GpibAddress>15</GpibAddress>
+</PluginInstConfig>
